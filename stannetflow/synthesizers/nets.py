@@ -16,6 +16,7 @@ class SingleTaskNet(nn.Module):
         self.dim_out = dim_out
 
         self.window_cnn_network = None
+        self.window_fc_network = None
         self.gmm_network = None
         self.dec_network = None
         self.memory = []
@@ -29,13 +30,15 @@ class SingleTaskNet(nn.Module):
             self.mask[dim_window, :] = 0
         else:
             self.mask = torch.ones(((dim_window+1), dim_in))
-            self.mask[dim_window, mask_mode:] = 0
+            for col_i in range(len(mask_mode)):
+                self.mask[dim_window, col_i] = mask_mode[col_i]
 
         curr_in = dim_in * dim_window if mask_mode is None else dim_in * (dim_window+1)
         # curr_in = dim_in * (dim_window+1)
         if encoder_arch is not None:
             self.window_cnn_network = self.make_layers(encoder_arch)
-            curr_in = 512
+            # self.window_fc = nn.Linear(dim_in, dim_in)
+            curr_in = 96
         assert decoder_arch[0] in ['gmm', 'softmax'], "Unknown Decoder Type"
         self.decoder_type = decoder_arch[0]
         if self.decoder_type == 'gmm':
@@ -49,9 +52,22 @@ class SingleTaskNet(nn.Module):
         out = self.make_mask(x)
 
         if self.window_cnn_network is not None:
-            out = torch.unsqueeze(out, 1)
+            # out_window = out[:, :-1, :]
+            # out_row = out[:, -1, :]
+
+            out_window = torch.unsqueeze(out, 1)
+            out_window = self.window_cnn_network(out_window)
+            out_window = out_window.view(out_window.size()[0], -1)
+
+            # reslink
+            # out_row = F.relu(self.window_fc(out_row))
             # print(out.shape)
-            out = self.window_cnn_network(out)
+            # out = torch.cat((out_window, out_row), 1)
+            # print(out_window.shape)
+            # print(out_row.shape)
+            # print(out.shape)
+            # input()
+
         out = out.view(out.size()[0], -1)
         if self.gmm_network is not None:
             pi, normal = self.gmm_network(out)
@@ -109,19 +125,16 @@ class SingleTaskNet(nn.Module):
 
     def make_mask(self, x):
         if self.mask_mode is None:
-            # print('masking', x, self.dim_in)
             x = x[:, :-self.dim_in]
             # x = x * self.mask
         else:
-            # print(x.shape)
-            # print('mask', self.mask.shape)
-            x = x * self.mask.to(device)
+            x = x.to(device) * self.mask.to(device)
         return x
 
     def make_layers(self, cfg, batch_norm=True):
         layers = []
         in_channels = 1
-        print(cfg)
+        # print(cfg)
         for v in cfg:
             if v == 'M':
                 layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
@@ -199,6 +212,7 @@ class MixtureDensityNetwork(nn.Module):
         return torch.mean(loss)
 
     def loss(self, pi, normal, y):
+        y = y.to(device)
         loglik = normal.log_prob(y.unsqueeze(1).expand_as(normal.loc))
         loglik = torch.sum(loglik, dim=2)
         # loss = -torch.logsumexp(torch.log(pi.probs) + loglik, dim=1)
