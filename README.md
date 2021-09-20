@@ -103,3 +103,16 @@ def test_ugr16(train_file, load_checkpoint=False):
 ```
 python test.py
 ```
+
+## Citations
+
+```bibtex
+@misc{xu2021stan,
+      title={STAN: Synthetic Network Traffic Generation with Generative Neural Models}, 
+      author={Shengzhe Xu and Manish Marwah and Martin Arlitt and Naren Ramakrishnan},
+      year={2021},
+      eprint={2009.12740},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
