@@ -45,7 +45,7 @@ Download source code by
 `pandas.DataFrame` object with two types of columns:
 
 * **Continuous Columns**: Columns that contain numerical values and which can take any value.
-* **Discrete columns**: Columns that only contain a finite number of possible values, wether
+* **Discrete columns**: Columns that only contain a finite number of possible values, whether
 these are string values or not.
 
 Standard **Tabular (Simulated) data** with number-based sampler.
