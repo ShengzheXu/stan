@@ -1,5 +1,8 @@
 # STAN: Synthetic Network Traffic Generation using Autoregressive Neural Models
 
+For a project overview, installation information, and detailed usage information please visit the [project homepage](https://sanghani-projects.cs.vt.edu/stan/).
+
+* Homepage: https://sanghani-projects.cs.vt.edu/stan/
 * Documentation: https://docs.google.com/document/d/1haSCXQRti21X08B9otwk4nVeB_zRoaKYFGoGXFvP3kc/edit?usp=sharing
 * Repository: https://github.com/ShengzheXu/stan
 
