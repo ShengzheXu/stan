@@ -40,6 +40,20 @@ Download source code by
 
 `pip install stannetflow`
 
+Using STAN vis Docker
+
+Build a Docker image with STAN CLI:
+```
+cd ./make_nfattacker_docker
+docker build -f ./nfattacker2.0 -t nfattacker:v2.0 ./
+```
+
+After build finished, run the container
+
+```
+docker run --rm -it --name nfattacker -v $(pwd):/workspace nfattacker:v2.0 bash
+```
+
 ## Play with model
 
 **Data Format**
