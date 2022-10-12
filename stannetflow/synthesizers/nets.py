@@ -96,11 +96,9 @@ class SingleTaskNet(nn.Module):
                 y = y.long().squeeze(1)
             # print('out', out)
             # print('fixed', y)
-            try:
-                batch_loss = torch.nn.CrossEntropyLoss()(out, y)
-            except:
-                print('y', y)
-                print('out', out)
+            y = y.to(out.get_device())
+            batch_loss = torch.nn.CrossEntropyLoss()(out, y)
+            
         self.memory.append(batch_loss.cpu().detach().numpy())
         # print('batch_loss', batch_loss.detach().numpy())
         return batch_loss
