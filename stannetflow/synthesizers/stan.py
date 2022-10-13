@@ -347,7 +347,7 @@ class STANCustomDataset(Dataset):
 
     def __getitem__(self, index):
         single_image_label = np.asarray(self.data.iloc[index]).reshape(self.height+1,self.width).astype(np.float32)[-1]
-        img_as_np = np.asarray(self.data.iloc[index]).reshape(self.height+1,self.width).astype(np.float32)[:-1]
+        img_as_np = np.asarray(self.data.iloc[index]).reshape(self.height+1,self.width).astype(np.float32)
         img_as_tensor = torch.from_numpy(img_as_np)
         return (img_as_tensor, single_image_label)
 
